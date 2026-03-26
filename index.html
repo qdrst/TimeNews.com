@@ -45,13 +45,16 @@
             background: #f7f7f7;
         }
 
+        /* 图片容器：相对定位，给侧边栏提供参考 */
         .img-container {
             position: relative;
             margin: 30px auto;
             max-width: 90%;
+            min-height: 500px;
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
         }
 
         #newsImg {
@@ -62,9 +65,10 @@
             transition: transform 0.2s;
         }
 
-        .zoom-panel {
-            position: fixed;
-            right: 15px;
+        /* 侧边缩放栏：悬浮在图片右侧，不挤压布局 */
+        .zoom-bar {
+            position: absolute;
+            right: 10px;
             top: 50%;
             transform: translateY(-50%);
             display: flex;
@@ -72,14 +76,13 @@
             gap: 10px;
             background: rgba(255,255,255,0.9);
             padding: 10px;
-            border-radius: 12px;
+            border-radius: 10px;
             box-shadow: 0 0 8px rgba(0,0,0,0.1);
-            z-index: 999;
         }
 
         .zoom-btn {
-            width: 42px;
-            height: 42px;
+            width: 40px;
+            height: 40px;
             font-size: 18px;
             border: none;
             background: #f5f5f5;
@@ -99,30 +102,34 @@
 <body>
     <h1>拾光报社</h1>
 
+    <!-- 自动生成期刊 -->
     <div class="nav" id="paperList"></div>
 
+    <!-- 图片显示区域 + 侧边缩放栏 -->
     <div class="img-container">
         <img id="newsImg" alt="报纸内容">
+        <div class="zoom-bar">
+            <button class="zoom-btn" onclick="zoomIn()">➕</button>
+            <button class="zoom-btn" onclick="zoomOut()">➖</button>
+            <button class="zoom-btn" onclick="resetZoom()">⟲</button>
+        </div>
     </div>
 
+    <!-- 翻页 -->
     <div class="page">
         <button class="btn" onclick="prevPage()">上一页</button>
         <button class="btn" onclick="nextPage()">下一页</button>
     </div>
 
-    <div class="zoom-panel">
-        <button class="zoom-btn" onclick="zoomIn()">➕</button>
-        <button class="zoom-btn" onclick="zoomOut()">➖</button>
-        <button class="zoom-btn" onclick="resetZoom()">⟲</button>
-    </div>
-
     <script>
+        // 配置
         const MAX_ISSUE = 10;
         const MAX_PAGE = 10;
         let currentPaper = "Pho1";
         let currentPage = 1;
         let scale = 1;
 
+        // 自动生成期刊按钮
         const list = document.getElementById("paperList");
         for (let i = 1; i <= MAX_ISSUE; i++) {
             let btn = document.createElement("button");
@@ -137,12 +144,14 @@
             list.appendChild(btn);
         }
 
+        // 更新图片
         function updateImg() {
-            const img = document.getElementById("newsImg");
+            let img = document.getElementById("newsImg");
             img.src = `${currentPaper}/${currentPage}.jpg`;
             img.style.transform = `scale(${scale})`;
         }
 
+        // 翻页
         function nextPage() {
             if (currentPage < MAX_PAGE) {
                 currentPage++;
@@ -157,6 +166,7 @@
             }
         }
 
+        // 缩放
         function zoomIn() {
             scale += 0.2;
             updateImg();
@@ -172,6 +182,7 @@
             updateImg();
         }
 
+        // 初始化
         updateImg();
     </script>
 </body>
