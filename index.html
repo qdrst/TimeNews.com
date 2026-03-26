@@ -13,101 +13,120 @@
         }
 
         body {
-            background: #ffffff;
-            padding: 20px;
-            text-align: center;
+            background: #fafafa;
+            padding: 30px 20px;
+            min-height: 100vh;
         }
 
-        h1 {
-            margin-bottom: 20px;
-            font-size: 26px;
-            color: #222;
+        .title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 12px;
+        }
+
+        .tip {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-bottom: 30px;
         }
 
         .nav {
-            margin: 20px 0;
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             gap: 10px;
+            margin-bottom: 30px;
         }
 
         .btn {
-            padding: 10px 22px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background: #fff;
+            padding: 11px 24px;
+            border-radius: 10px;
+            border: none;
+            background: #ffffff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             font-size: 15px;
             cursor: pointer;
+            transition: all 0.2s;
         }
 
         .btn:hover {
-            background: #f7f7f7;
+            background: #2d7df4;
+            color: white;
+            transform: translateY(-2px);
         }
 
-        /* 图片容器：相对定位，给侧边栏提供参考 */
         .img-container {
             position: relative;
-            margin: 30px auto;
-            max-width: 90%;
-            min-height: 500px;
+            max-width: 92%;
+            margin: 0 auto;
             display: flex;
             align-items: center;
             justify-content: center;
+            background: white;
+            border-radius: 16px;
+            padding: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
             overflow: hidden;
         }
 
         #newsImg {
             max-width: 100%;
-            height: auto;
+            max-height: 80vh;
             border-radius: 10px;
-            box-shadow: 0 0 12px rgba(0,0,0,0.05);
-            transition: transform 0.2s;
+            transition: transform 0.25s ease;
         }
 
-        /* 侧边缩放栏：悬浮在图片右侧，不挤压布局 */
         .zoom-bar {
             position: absolute;
-            right: 10px;
+            right: 16px;
             top: 50%;
             transform: translateY(-50%);
             display: flex;
             flex-direction: column;
             gap: 10px;
-            background: rgba(255,255,255,0.9);
-            padding: 10px;
-            border-radius: 10px;
-            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+            background: rgba(255,255,255,0.95);
+            padding: 12px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 10;
         }
 
         .zoom-btn {
-            width: 40px;
-            height: 40px;
-            font-size: 18px;
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
             border: none;
-            background: #f5f5f5;
-            border-radius: 8px;
+            background: #f8f9fa;
+            font-size: 18px;
             cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .zoom-btn:hover {
+            background: #e9ecef;
         }
 
         .page {
-            margin: 20px 0;
             display: flex;
             justify-content: center;
-            gap: 15px;
+            gap: 16px;
+            margin-top: 30px;
         }
     </style>
 </head>
 
 <body>
-    <h1>拾光报社</h1>
 
-    <!-- 自动生成期刊 -->
+    <div class="title">拾光报社</div>
+    <div class="tip">点击期刊阅读</div>
+
     <div class="nav" id="paperList"></div>
 
-    <!-- 图片显示区域 + 侧边缩放栏 -->
     <div class="img-container">
-        <img id="newsImg" alt="报纸内容">
+        <img id="newsImg">
         <div class="zoom-bar">
             <button class="zoom-btn" onclick="zoomIn()">➕</button>
             <button class="zoom-btn" onclick="zoomOut()">➖</button>
@@ -115,21 +134,18 @@
         </div>
     </div>
 
-    <!-- 翻页 -->
     <div class="page">
         <button class="btn" onclick="prevPage()">上一页</button>
         <button class="btn" onclick="nextPage()">下一页</button>
     </div>
 
     <script>
-        // 配置
         const MAX_ISSUE = 10;
         const MAX_PAGE = 10;
         let currentPaper = "Pho1";
         let currentPage = 1;
         let scale = 1;
 
-        // 自动生成期刊按钮
         const list = document.getElementById("paperList");
         for (let i = 1; i <= MAX_ISSUE; i++) {
             let btn = document.createElement("button");
@@ -144,14 +160,12 @@
             list.appendChild(btn);
         }
 
-        // 更新图片
         function updateImg() {
-            let img = document.getElementById("newsImg");
+            const img = document.getElementById("newsImg");
             img.src = `${currentPaper}/${currentPage}.jpg`;
             img.style.transform = `scale(${scale})`;
         }
 
-        // 翻页
         function nextPage() {
             if (currentPage < MAX_PAGE) {
                 currentPage++;
@@ -166,7 +180,6 @@
             }
         }
 
-        // 缩放
         function zoomIn() {
             scale += 0.2;
             updateImg();
@@ -182,7 +195,6 @@
             updateImg();
         }
 
-        // 初始化
         updateImg();
     </script>
 </body>
