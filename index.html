@@ -74,6 +74,7 @@
             padding: 15px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.06);
             overflow: hidden;
+            min-height: 300px;
         }
 
         #newsImg {
@@ -81,6 +82,12 @@
             max-height: 80vh;
             border-radius: 10px;
             transition: transform 0.25s ease;
+        }
+
+        .error-tip {
+            color: #e74c3c;
+            font-size: 16px;
+            display: none;
         }
 
         .zoom-bar {
@@ -179,7 +186,8 @@
 
     <div class="content" id="readContent">
         <div class="img-container">
-            <img id="newsImg">
+            <img id="newsImg" alt="报纸内容">
+            <div class="error-tip" id="errorTip">⚠️ 读取失败</div>
             <div class="zoom-bar">
                 <button class="zoom-btn" onclick="zoomIn()">➕</button>
                 <button class="zoom-btn" onclick="zoomOut()">➖</button>
@@ -204,7 +212,7 @@
             await autoDetectPapers();
         };
 
-        // 自动检测期刊数量（实时读取）
+        // 自动检测期刊数量
         async function autoDetectPapers() {
             const list = document.getElementById("paperList");
             let index = 1;
@@ -255,10 +263,23 @@
             document.getElementById("noticeBox").style.display = "none";
         }
 
+        // 更新图片（含加载失败处理）
         function updateImg() {
             const img = document.getElementById("newsImg");
+            const errorTip = document.getElementById("errorTip");
+            
+            // 先隐藏错误提示
+            errorTip.style.display = "none";
+            img.style.display = "block";
+            
             img.src = `${currentPaper}/${currentPage}.jpg`;
             img.style.transform = `scale(${scale})`;
+            
+            // 监听加载失败
+            img.onerror = function () {
+                img.style.display = "none";
+                errorTip.style.display = "block";
+            };
         }
 
         function nextPage() {
