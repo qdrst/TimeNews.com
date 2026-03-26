@@ -24,7 +24,7 @@
             color: #f3f4f6;
         }
 
-        /* ====================== 顶部标题栏 ====================== */
+        /* 顶部标题栏 */
         .header-wrap {
             position: sticky;
             top: 0;
@@ -107,7 +107,7 @@
             display: block;
         }
 
-        /* ====================== 公告 ====================== */
+        /* 公告 */
         .notice {
             max-width: 900px;
             margin: 20px auto;
@@ -124,7 +124,7 @@
             color: #d1d5db;
         }
 
-        /* ====================== 容器 & 页面 ====================== */
+        /* 容器 & 页面 */
         .container {
             max-width: 900px;
             margin: 0 auto;
@@ -159,7 +159,7 @@
             border-color: #374151;
         }
 
-        /* ====================== 预览区域 ====================== */
+        /* 预览区域 */
         .viewer {
             width: 100%;
             height: 75vh;
@@ -213,7 +213,7 @@
             color: #fff;
         }
 
-        /* ====================== 右侧工具栏 ====================== */
+        /* 右侧工具栏 */
         .sidebar {
             position: fixed;
             right: 16px;
@@ -263,7 +263,7 @@
             display: block;
         }
 
-        /* ====================== 底部栏（已按你要求布局） ====================== */
+        /* 底部栏 */
         .footer {
             position: fixed;
             bottom: 0;
@@ -286,14 +286,12 @@
             color: #9ca3af;
         }
 
-        /* 时间 → 底部正中间 */
         #currentTime {
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
         }
 
-        /* 右下角组：版权 + 设置 */
         .footer-right {
             margin-left: auto;
             display: flex;
@@ -307,7 +305,7 @@
             border-radius: 6px;
         }
 
-        /* ====================== 设置面板 ====================== */
+        /* 设置面板 */
         .settings-panel {
             position: fixed;
             bottom: 60px;
@@ -338,46 +336,6 @@
         .setting-item:last-child {
             border-bottom: none;
         }
-
-        /* ====================== 开发者面板 ====================== */
-        .modal {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .modal.show { display: flex; }
-        .modal-box {
-            background: #fff;
-            width: 360px;
-            border-radius: 12px;
-            padding: 24px;
-        }
-        .dev-panel {
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 700px;
-            max-height: 80vh;
-            background: #fff;
-            border-radius: 12px;
-            padding: 20px;
-            display: none;
-            z-index: 1001;
-        }
-        .dev-panel.show { display: block; }
-        .code-box {
-            background: #1f2937;
-            color: #fff;
-            border-radius: 8px;
-            padding: 14px;
-            font-size: 12px;
-            max-height: 300px;
-            overflow-y: auto;
-        }
     </style>
 </head>
 <body>
@@ -396,7 +354,7 @@
 </div>
 
 <div class="header-restore" id="headerRestore" onclick="restoreHeader()">显示标题栏</div>
-<div class="notice" id="notice">加载公告中...</div>
+<div class="notice" id="notice">beta V1.0 | 拾光报社官网首个测试版 | Bug 回報請聯絡 QQ：3646976723</div>
 
 <div class="container">
     <div class="page home show" id="home">
@@ -438,7 +396,7 @@
     <span id="toggleText">隐藏工具栏</span>
 </div>
 
-<!-- ====================== 底部布局（最终版） ====================== -->
+<!-- 底部 -->
 <div class="footer">
     <div id="currentTime"></div>
     <div class="footer-right">
@@ -473,23 +431,6 @@
         <span>开发者模式</span>
         <button class="header-btn" onclick="openDev()">进入</button>
     </div>
-</div>
-
-<!-- 开发者 -->
-<div class="modal" id="devModal">
-    <div class="modal-box">
-        <h3>开发者密码</h3>
-        <input id="devPwd" type="password" placeholder="密码：888888" style="width:100%;margin:10px 0;padding:10px;border-radius:8px;">
-        <button style="width:100%;padding:10px;background:#1f2937;color:#fff;border:none;border-radius:8px;cursor:pointer;" onclick="checkDevPwd()">确认</button>
-    </div>
-</div>
-
-<div class="dev-panel" id="devPanel">
-    <div style="display:flex;justify-content:space-between;">
-        <h3>开发者控制台</h3>
-        <button onclick="closeDev()">退出</button>
-    </div>
-    <div class="code-box" id="codeBox"></div>
 </div>
 
 <script>
@@ -566,7 +507,6 @@
     // 加载
     window.onload=async ()=>{
         document.getElementById("year").innerText=new Date().getFullYear();
-        document.getElementById("codeBox").innerText=document.documentElement.outerHTML;
 
         // 时间
         function updateTime(){
@@ -576,13 +516,6 @@
             });
         }
         updateTime(); setInterval(updateTime,1000);
-
-        try{
-            const r=await fetch("bard.txt");
-            document.getElementById("notice").innerText=await r.text();
-        }catch(e){
-            document.getElementById("notice").innerText="beta1.0 测试版";
-        }
 
         const list=document.getElementById("paperList");
         ["Pho1","Pho2","Pho3"].forEach(p=>{
@@ -608,9 +541,10 @@
         });
     }
 
+    // ✅ 修正图片路径：适配当前文件结构
     function loadImg(){
-        const src=`./${currentPaper}/${currentPage}.jpg`;
-        img.onerror=()=>img.src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23f9fafb' width='400' height='300'/%3E%3Ctext x='50%25' y='50%25' fill='%23666' text-anchor='middle' font-size='22'%3E无内容%3C/text%3E%3C/svg%3E";
+        const src=`./${currentPaper}/${currentPage}.jpg`; // 因为 index.html 和 Pho1/ 同级
+        img.onerror=()=>img.src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23f9fafb' width='400' height='300'/%3E%3Ctext x='50%25' y='50%25' fill='%23666' text-anchor='middle' font-size='22'%3E暂无报纸内容%3C/text%3E%3C/svg%3E";
         img.src=src; resetZoom();
     }
 
@@ -630,16 +564,7 @@
     document.getElementById("settingsBtn").onclick=toggleSettings;
 
     // 开发者
-    function openDev(){document.getElementById("devModal").classList.add("show");}
-    function checkDevPwd(){
-        if(document.getElementById("devPwd").value==="888888"){
-            document.getElementById("devModal").classList.remove("show");
-            document.getElementById("devPanel").classList.add("show");
-        }else{
-            document.getElementById("devPwd").value="";
-        }
-    }
-    function closeDev(){document.getElementById("devPanel").classList.remove("show");}
+    function openDev(){alert("开发者模式：需联系管理员获取权限");}
 
     // 侧边栏开关
     let sideShow=true;
