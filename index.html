@@ -20,7 +20,7 @@
 
         .title {
             text-align: center;
-            font-size: 28px;
+            font-size: 32px;
             font-weight: 600;
             color: #2c3e50;
             margin-bottom: 12px;
@@ -29,7 +29,7 @@
         .tip {
             text-align: center;
             color: #7f8c8d;
-            font-size: 14px;
+            font-size: 15px;
             margin-bottom: 30px;
         }
 
@@ -37,17 +37,17 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
             margin-bottom: 30px;
         }
 
         .btn {
-            padding: 11px 24px;
+            padding: 12px 26px;
             border-radius: 10px;
             border: none;
             background: #ffffff;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            font-size: 15px;
+            font-size: 16px;
             cursor: pointer;
             transition: all 0.2s;
         }
@@ -56,6 +56,10 @@
             background: #2d7df4;
             color: white;
             transform: translateY(-2px);
+        }
+
+        .content {
+            display: none;
         }
 
         .img-container {
@@ -67,7 +71,7 @@
             justify-content: center;
             background: white;
             border-radius: 16px;
-            padding: 10px;
+            padding: 15px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.06);
             overflow: hidden;
         }
@@ -115,71 +119,154 @@
             gap: 16px;
             margin-top: 30px;
         }
+
+        /* 公告弹窗样式 */
+        .notice {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 320px;
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.15);
+            padding: 20px;
+            z-index: 9999;
+            animation: slideIn 0.4s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity:0; transform: translateX(100%); }
+            to { opacity:1; transform: translateX(0); }
+        }
+
+        .notice h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #222;
+        }
+
+        .notice p {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.5;
+            white-space: pre-line;
+        }
+
+        .close-notice {
+            position: absolute;
+            top: 14px;
+            right: 16px;
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #999;
+        }
     </style>
 </head>
 
 <body>
 
+    <!-- 公告弹窗（默认显示） -->
+    <div class="notice" id="noticeBox" style="display:none;">
+        <button class="close-notice" onclick="closeNotice()">×</button>
+        <h3>🔔 网站公告</h3>
+        <p id="noticeContent">加载中...</p>
+    </div>
+
     <div class="title">拾光报社</div>
-    <div class="tip">点击期刊阅读</div>
+    <div class="tip">请选择期刊开始阅读</div>
 
     <div class="nav" id="paperList"></div>
 
-    <div class="img-container">
-        <img id="newsImg">
-        <div class="zoom-bar">
-            <button class="zoom-btn" onclick="zoomIn()">➕</button>
-            <button class="zoom-btn" onclick="zoomOut()">➖</button>
-            <button class="zoom-btn" onclick="resetZoom()">⟲</button>
+    <div class="content" id="readContent">
+        <div class="img-container">
+            <img id="newsImg">
+            <div class="zoom-bar">
+                <button class="zoom-btn" onclick="zoomIn()">➕</button>
+                <button class="zoom-btn" onclick="zoomOut()">➖</button>
+                <button class="zoom-btn" onclick="resetZoom()">⟲</button>
+            </div>
+        </div>
+
+        <div class="page">
+            <button class="btn" onclick="prevPage()">上一页</button>
+            <button class="btn" onclick="nextPage()">下一页</button>
         </div>
     </div>
 
-    <div class="page">
-        <button class="btn" onclick="prevPage()">上一页</button>
-        <button class="btn" onclick="nextPage()">下一页</button>
-    </div>
-
     <script>
+        // —————————— 配置 ——————————
         const MAX_ISSUE = 10;
         const MAX_PAGE = 10;
-        let currentPaper = "Pho1";
+        let currentPaper = "";
         let currentPage = 1;
         let scale = 1;
 
-        const list = document.getElementById("paperList");
-        for (let i = 1; i <= MAX_ISSUE; i++) {
-            let btn = document.createElement("button");
-            btn.className = "btn";
-            btn.innerText = `第${i}期`;
-            btn.onclick = () => {
-                currentPaper = `Pho${i}`;
-                currentPage = 1;
-                scale = 1;
-                updateImg();
-            };
-            list.appendChild(btn);
+        // —————————— 打开网站自动读取公告 ——————————
+        window.onload = function () {
+            // 已修改为读取 bard.txt
+            fetch("/bard.txt")
+                .then(res => res.text())
+                .then(text => {
+                    document.getElementById("noticeContent").innerText = text;
+                    document.getElementById("noticeBox").style.display = "block";
+                })
+                .catch(err => {
+                    document.getElementById("noticeContent").innerText = "暂无公告";
+                    document.getElementById("noticeBox").style.display = "block";
+                });
+
+            // 生成期刊列表
+            initPapers();
+        };
+
+        // 关闭公告
+        function closeNotice() {
+            document.getElementById("noticeBox").style.display = "none";
         }
 
+        // —————————— 期刊生成 ——————————
+        function initPapers() {
+            const list = document.getElementById("paperList");
+            for (let i = 1; i <= MAX_ISSUE; i++) {
+                let btn = document.createElement("button");
+                btn.className = "btn";
+                btn.innerText = `第${i}期`;
+                btn.onclick = () => {
+                    currentPaper = `Pho${i}`;
+                    currentPage = 1;
+                    scale = 1;
+                    document.getElementById("readContent").style.display = "block";
+                    updateImg();
+                };
+                list.appendChild(btn);
+            }
+        }
+
+        // —————————— 图片更新 ——————————
         function updateImg() {
             const img = document.getElementById("newsImg");
             img.src = `${currentPaper}/${currentPage}.jpg`;
             img.style.transform = `scale(${scale})`;
         }
 
+        // —————————— 翻页 ——————————
         function nextPage() {
-            if (currentPage < MAX_PAGE) {
+            if (currentPage < MAX_PAGE && currentPaper) {
                 currentPage++;
                 updateImg();
             }
         }
 
         function prevPage() {
-            if (currentPage > 1) {
+            if (currentPage > 1 && currentPaper) {
                 currentPage--;
                 updateImg();
             }
         }
 
+        // —————————— 缩放 ——————————
         function zoomIn() {
             scale += 0.2;
             updateImg();
@@ -194,8 +281,6 @@
             scale = 1;
             updateImg();
         }
-
-        updateImg();
     </script>
 </body>
 </html>
