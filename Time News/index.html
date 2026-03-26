@@ -59,7 +59,7 @@
         }
         body.dark .header-btn {
             background: #374151;
-            border-color: #4b5563;
+            border-color: #4b563;
             color: #f3f4f6;
         }
 
@@ -112,7 +112,7 @@
             border-left: 4px solid #374151;
             border-radius: 6px;
             font-size: 14px;
-            color: #4b563;
+            color: #4b5563;
         }
         body.dark .notice {
             background: #1f2937;
@@ -214,7 +214,7 @@
             right: 16px;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(255,255,255,0.95);
+            background: rgba(255,255,250.95);
             border: 1px solid #e5e7eb;
             border-radius: 12px;
             padding: 12px 8px;
@@ -345,7 +345,7 @@
 </div>
 
 <div class="header-restore" id="headerRestore" onclick="restoreHeader()">显示标题栏</div>
-<div class="notice">beta V1.0 | 拾光报社官网首个测试版 | Bug 回報請聯絡 QQ：3646976723</div>
+<div class="notice">beta V1.0 | 拾光报社官网测试版 | 问题联系QQ：3646976723</div>
 
 <div class="container">
     <div class="page home show" id="home">
@@ -426,10 +426,9 @@
     let currentPaper = "";
     let currentPage = 1;
     const totalPages = 10;
-    let headerVisible = true;
 
-    // 🔥 唯一修改：适配你的子目录完整路径
-    const basePath = "/TimeNews.com/Time News/";
+    // ✅ 已经去掉空格和%20，纯干净路径
+    const FULL_PATH = "/TimeNews.com/TimeNews/";
 
     const headerWrap = document.getElementById("headerWrap");
     const headerBtn = document.getElementById("toggleHeaderBtn");
@@ -530,12 +529,11 @@
             const b=document.getElementById("settingsBtn");
             if(!s.contains(e.target)&&!b.contains(e.target)) s.classList.remove("show");
         });
-    }
+    };
 
-    // ✅ 路径已完全按你的要求写死
+    // ✅ 无空格、无%20、干净可用
     function loadImg(){
-        const src = basePath + currentPaper + "/" + currentPage + ".jpg";
-        img.src = src;
+        img.src = FULL_PATH + currentPaper + "/" + currentPage + ".jpg";
         img.onerror = () => {
             img.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23f9fafb' width='400' height='300'/%3E%3Ctext x='50%25' y='50%25' fill='%23666' text-anchor='middle' font-size='22'%3E未找到内容%3C/text%3E%3C/svg%3E";
         };
